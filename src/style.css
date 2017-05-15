@@ -1,0 +1,33 @@
+.data1.chart-line { -fx-line-color: blue; }
+.data2.chart-line { -fx-line-color: yellow; }
+.data3.chart-line { -fx-line-color: red; }
+.data4.chart-line { -fx-line-color: green; }
+
+.hbox {
+    -fx-background-color: #2f4f4f;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+}
+.vbox {
+    -fx-background-color: #2f4f4f;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+}
+
+.chart {
+    -fx-size: 96, 205;
+}
+.chart-series-line {    
+    -fx-stroke-width: 1px;
+    -fx-effect: null;
+}
+ 
+.default-color0.chart-series-line { -fx-stroke: cyan; }
+.default-color1.chart-series-line { -fx-stroke: magenta; }
+ 
+.default-color0.chart-line-symbol {
+	-fx-background-color: cyan, cyan;
+}
+.default-color1.chart-line-symbol {
+	-fx-background-color: magenta, magenta; 
+}
