@@ -20,9 +20,9 @@ class Data(): Serializable {
             val od = NumArr(osize)
             for ((i, c) in cl.withIndex()) {
                 if (i < isize) {
-                    id[i] = c.toDouble()
+                    id[i] = c.toFloat()
                 } else {
-                    od[i - shift] = c.toDouble()
+                    od[i - shift] = c.toFloat()
                 }
             }
             input.add(id)

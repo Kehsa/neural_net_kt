@@ -124,7 +124,7 @@ class FxAppWindow : Application() {
         txtf.promptText = keeper.conf.learn_rate.toString()
         sidePane.children.add(txtf)
         sidePane.children.add(buildButton("Apply learn rate", {
-            keeper.conf.learn_rate = txtf.text.toDouble()
+            keeper.conf.learn_rate = txtf.text.toFloat()
             label.text = "New learn rate is ${keeper.conf.learn_rate}"
         }))
 
@@ -132,7 +132,7 @@ class FxAppWindow : Application() {
         txtf.promptText = keeper.conf.regularization_rate.toString()
         sidePane.children.add(txtf)
         sidePane.children.add(buildButton("Apply regul. rate", {
-            keeper.conf.regularization_rate = txtf.text.toDouble()
+            keeper.conf.regularization_rate = txtf.text.toFloat()
             label.text = "New regularization rate is ${keeper.conf.regularization_rate}"
         }))
 

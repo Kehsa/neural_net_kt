@@ -29,26 +29,26 @@ class Repeater(val max: Int) {
 
 class Config {
     var activation = ""
-    var learn_rate = .0
-    var regularization_rate = .0
-    var train_to_test = .0f
+    var learn_rate = .0f
+    var regularization_rate = .0f
+    var train_to_test = .0f// ever
     var net_conf = intArrayOf(0)
     var data_conf = intArrayOf(0)
-    var learn_moment = .0
-    var error_norm = .0
+    var learn_moment = .0f
+    var error_norm = .0f
 
     companion object {
         fun readConfig(): Config {
             val conf: Config = Config()
             val s = Files.readAllLines(Paths.get(config_path))
             conf.activation = s[0]
-            conf.learn_rate = s[1].toDouble()
-            conf.regularization_rate = s[2].toDouble()
+            conf.learn_rate = s[1].toFloat()
+            conf.regularization_rate = s[2].toFloat()
             conf.train_to_test = s[3].toFloat()
             conf.net_conf = strToIntArr(s[4])
             conf.data_conf = strToIntArr(s[5])
-            conf.learn_moment = s[6].toDouble()
-            conf.error_norm = s[7].toDouble()
+            conf.learn_moment = s[6].toFloat()
+            conf.error_norm = s[7].toFloat()
             return conf
         }
     }

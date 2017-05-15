@@ -4,14 +4,14 @@ import java.io.Serializable
 import java.lang.Math.pow
 import java.util.Random
 
-typealias Num = Double
-typealias NumArr = DoubleArray
+typealias Num = Float
+typealias NumArr = FloatArray
 
 class Neuron(prev_size: Int): Serializable {
     var weights = NumArr(prev_size, { Rand.next })
-    @Transient var input = .0
-    @Transient var output = .0
-    @Transient var delta = .0
+    @Transient var input = .0f
+    @Transient var output = .0f
+    @Transient var delta = .0f
 
     fun calc(prev_layer: Layer?) {
         if (prev_layer != null) {
@@ -38,13 +38,13 @@ class Neuron(prev_size: Int): Serializable {
     }
 
     fun regularization(coef: Num): Num {
-        return coef * weights.indices.sumByDouble { pow(weights[it], 2.0) }
+        return coef * weights.indices.sumByDouble { pow(weights[it].toDouble(), 2.0) }.toFloat()
     }
 
     companion object Rand {
         val rnd = Random()
         val next
-            get() = rnd.nextGaussian() / 7 + .5f
+            get() = rnd.nextGaussian().toFloat() / 5
     }
 }
 
@@ -94,19 +94,19 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
 
     fun mse(inD: List<NumArr>, outD: List<NumArr>): Pair<Num, Num> {
         val output_layer = layers[layers.lastIndex].neurons
-        var accum = .0
+        var accum = .0f
         var tru = 0
         for (i in inD.indices) {
             calc(inD[i])
             val arr = NumArr(output_layer.size)
             for (n in 0..output_layer.size-1) {
-                arr[n] = Math.pow( (outD[i][n] - output_layer[n].output), 2.0)
+                arr[n] = Math.pow( (outD[i][n] - output_layer[n].output).toDouble(), 2.0).toFloat()
             }
             val e = arr.sum()
             accum += e
             if (e < err) tru += 1
         }
-        return Pair(accum / inD.size, tru / inD.size * 100.0)
+        return Pair(accum / inD.size, tru / inD.size * 100.0f)
     }
 
     fun backpropagation(target: NumArr) {
@@ -131,7 +131,7 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
 }
 
 fun sigm(x: Num): Num = run {
-    1 / (1 + Math.exp((-x)))
+    1 / (1 + Math.exp((-x.toDouble())).toFloat())
     //maxOf(.1*x, x)
 }
 fun sigd(x: Num): Num = run {
