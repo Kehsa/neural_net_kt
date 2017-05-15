@@ -70,6 +70,6 @@ fun printNet(net: Net) {
         for (n in l.neurons) {
             for (w in n.weights)
                 print("$w ")
-            println("\nn: ${n.input}  ${n.delta}  ${n.output}")
+            println("\nn: ${n.delta}  ${n.output}")
         }
 }

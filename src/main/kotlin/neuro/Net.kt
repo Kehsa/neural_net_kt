@@ -7,9 +7,8 @@ import java.util.Random
 typealias Num = Float
 typealias NumArr = FloatArray
 
-class Neuron(prev_size: Int): Serializable {
-    var weights = NumArr(prev_size, { Rand.next })
-    @Transient var input = .0f
+class Neuron(val isOutputLayer: Boolean, prev_size: Int): Serializable {
+    var weights = NumArr(prev_size, { Rand.next })// +1 is bias
     @Transient var output = .0f
     @Transient var delta = .0f
 
@@ -20,8 +19,9 @@ class Neuron(prev_size: Int): Serializable {
             for (i in 0..weights.size-1) { // last is bias
                 arr[i] = n[i].output * weights[i]
             }
-            input = arr.sum()// + weights.last()
-            output = sigm(input)
+            output = sigm(arr.sum())
+            /*if (!isOutputLayer)
+                output += weights.last()*/
         }
     }
 
@@ -44,7 +44,7 @@ class Neuron(prev_size: Int): Serializable {
     companion object Rand {
         val rnd = Random()
         val next
-            get() = rnd.nextGaussian().toFloat() / 5
+            get() = rnd.nextGaussian().toFloat() / 4 + .5f
     }
 }
 
@@ -56,12 +56,12 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
     var layers = mutableListOf<Layer>()
     init {
         var tmp: Layer? = null
-        for (n in lay_conf) {
+        for ((i, n) in lay_conf.withIndex()) {
             val new_lay = Layer(Array(n,{
                 if (tmp != null)
-                    Neuron(tmp!!.neurons.size)
+                    Neuron(i == lay_conf.lastIndex, tmp!!.neurons.size)
                 else
-                    Neuron(0)
+                    Neuron(false, 0)
             }), tmp)
 
             if (tmp != null)
@@ -117,21 +117,21 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
                 val neuron = lay.neurons[npos]
                 if (il == lastIndex)
                     neuron.delta = sigd(neuron.output) *
-                            (neuron.err_out(target[npos]) )// + neuron.regularization(regulCoef))
+                            (neuron.err_out(target[npos]) + neuron.regularization(regulCoef))
                 else
                     neuron.delta = sigd(neuron.output) *
-                            (neuron.err_hidden(lay.nex!!, npos) )// + neuron.regularization(regulCoef))
-                for (i in neuron.weights.indices) {
-                    neuron.weights[i] = moment * neuron.weights[i] +
-                            (learning_rate * neuron.delta * lay.prev!!.neurons[i].output)
-                }
+                            (neuron.err_hidden(lay.nex!!, npos) + neuron.regularization(regulCoef))
+                val w = neuron.weights
+                for (i in 0..w.size-1)// bias is last
+                    w[i] = moment * w[i] + (learning_rate * neuron.delta * lay.prev!!.neurons[i].output)
+                //w[w.lastIndex] = moment * w[w.lastIndex] + (learning_rate * neuron.delta)
             }
         }
     }
 }
 
 fun sigm(x: Num): Num = run {
-    1 / (1 + Math.exp((-x.toDouble())).toFloat())
+    1 / (1 + Math.exp((-x).toDouble())).toFloat()
     //maxOf(.1*x, x)
 }
 fun sigd(x: Num): Num = run {
