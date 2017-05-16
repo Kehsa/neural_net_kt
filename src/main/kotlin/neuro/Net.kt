@@ -44,7 +44,7 @@ class Neuron(prev_size: Int): Serializable {
     companion object Rand {
         val rnd = Random()
         val next
-            get() = rnd.nextGaussian().toFloat() / 4 + .5f
+            get() = (rnd.nextGaussian() / 3.0 + .1).toFloat()
     }
 }
 

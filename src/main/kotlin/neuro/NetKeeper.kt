@@ -87,6 +87,7 @@ class NetKeeper(val window: WeakReference<FxAppWindow>): Service<Unit>() {
     fun buildNet() {
         i = 0 //val (f, fd) = ActivationFun.getFunc(conf.activation)
         net = Net(conf.net_conf, conf.learn_rate, conf.regularization_rate, conf.learn_moment)
+        test()
     }
 
     fun step(net: Net, tri: List<NumArr>, tro: List<NumArr>) {
