@@ -104,15 +104,15 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
             for (n in 0..output_layer.size-1) {
                 val output = output_layer[n].output
                 arr[n] = Math.pow( (outD[i][n] - output).toDouble(), 2.0).toFloat()
-                if (output > max) {
+                if (max < output) {
                     max = output
                     pos_max = n
                 }
             }
             accum += arr.sum()
-            if (outD[i][pos_max] == 1.0f) tru += 1
+            if (outD[i][pos_max] == 1f) tru += 1
         }
-        return Pair(accum / inD.size, tru / inD.size * 100.0f)
+        return Pair(accum / inD.size, tru.toFloat() / inD.size * 100.0f)
     }
 
     fun backpropagation(target: NumArr) {
