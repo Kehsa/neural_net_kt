@@ -7,7 +7,7 @@ import java.util.Random
 typealias Num = Float
 typealias NumArr = FloatArray
 
-class Neuron(val isOutputLayer: Boolean, prev_size: Int): Serializable {
+class Neuron(prev_size: Int): Serializable {
     var weights = NumArr(prev_size, { Rand.next })// +1 is bias
     @Transient var output = .0f
     @Transient var delta = .0f
@@ -51,17 +51,17 @@ class Neuron(val isOutputLayer: Boolean, prev_size: Int): Serializable {
 class Layer(var neurons: Array<Neuron>, var prev: Layer? = null, var nex: Layer? = null): Serializable
 
 class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
-          val moment: Num, val err: Num): Serializable {
+          val moment: Num): Serializable {
 
     var layers = mutableListOf<Layer>()
     init {
         var tmp: Layer? = null
-        for ((i, n) in lay_conf.withIndex()) {
+        for (n in lay_conf) {
             val new_lay = Layer(Array(n,{
                 if (tmp != null)
-                    Neuron(i == lay_conf.lastIndex, tmp!!.neurons.size)
+                    Neuron(tmp!!.neurons.size)
                 else
-                    Neuron(false, 0)
+                    Neuron(0)
             }), tmp)
 
             if (tmp != null)
@@ -99,12 +99,18 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
         for (i in inD.indices) {
             calc(inD[i])
             val arr = NumArr(output_layer.size)
+            var pos_max = 0
+            var max = output_layer[0].output
             for (n in 0..output_layer.size-1) {
-                arr[n] = Math.pow( (outD[i][n] - output_layer[n].output).toDouble(), 2.0).toFloat()
+                val output = output_layer[n].output
+                arr[n] = Math.pow( (outD[i][n] - output).toDouble(), 2.0).toFloat()
+                if (output > max) {
+                    max = output
+                    pos_max = n
+                }
             }
-            val e = arr.sum()
-            accum += e
-            if (e < err) tru += 1
+            accum += arr.sum()
+            if (outD[i][pos_max] == 1.0f) tru += 1
         }
         return Pair(accum / inD.size, tru / inD.size * 100.0f)
     }
@@ -116,11 +122,11 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
             for(npos in lay.neurons.indices) {
                 val neuron = lay.neurons[npos]
                 if (il == lastIndex)
-                    neuron.delta = sigd(neuron.output) *
-                            (neuron.err_out(target[npos]) + neuron.regularization(regulCoef))
+                    neuron.delta = sigd(neuron.output) * (neuron.err_out(target[npos]) )
+                    //+ neuron.regularization(regulCoef))
                 else
-                    neuron.delta = sigd(neuron.output) *
-                            (neuron.err_hidden(lay.nex!!, npos) + neuron.regularization(regulCoef))
+                    neuron.delta = sigd(neuron.output) * (neuron.err_hidden(lay.nex!!, npos) )
+                    //+ neuron.regularization(regulCoef))
                 val w = neuron.weights
                 for (i in 0..w.size-1)// bias is last
                     w[i] = moment * w[i] + (learning_rate * neuron.delta * lay.prev!!.neurons[i].output)

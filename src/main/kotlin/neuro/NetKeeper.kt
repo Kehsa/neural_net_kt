@@ -86,7 +86,7 @@ class NetKeeper(val window: WeakReference<FxAppWindow>): Service<Unit>() {
 
     fun buildNet() {
         i = 0 //val (f, fd) = ActivationFun.getFunc(conf.activation)
-        net = Net(conf.net_conf, conf.learn_rate, conf.regularization_rate, conf.learn_moment, conf.error_norm)
+        net = Net(conf.net_conf, conf.learn_rate, conf.regularization_rate, conf.learn_moment)
     }
 
     fun step(net: Net, tri: List<NumArr>, tro: List<NumArr>) {
@@ -100,15 +100,8 @@ class NetKeeper(val window: WeakReference<FxAppWindow>): Service<Unit>() {
         fun convertData() {
             val strings = Files.readAllLines(Paths.get(data_text_path))
             val conf = Config.readConfig()
-            val columns = conf.data_conf
-            val columnsCount = columns.size
-            var isize = 0
-            for ((i, v) in columns.withIndex()) {
-                if (v == 0) {
-                    isize = i
-                    break
-                }
-            }
+            val columnsCount = conf.data_all
+            val isize = conf.data_in
             val (train, test) = dataFromStringList(strings, conf.train_to_test, isize, columnsCount)
             serialize(train, data_trn_path)
             serialize(test, data_tst_path)

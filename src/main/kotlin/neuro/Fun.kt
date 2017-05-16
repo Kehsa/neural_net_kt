@@ -33,9 +33,9 @@ class Config {
     var regularization_rate = .0f
     var train_to_test = .0f// ever
     var net_conf = intArrayOf(0)
-    var data_conf = intArrayOf(0)
+    var data_in = 0
+    var data_all = 0
     var learn_moment = .0f
-    var error_norm = .0f
 
     companion object {
         fun readConfig(): Config {
@@ -46,9 +46,9 @@ class Config {
             conf.regularization_rate = s[2].toFloat()
             conf.train_to_test = s[3].toFloat()
             conf.net_conf = strToIntArr(s[4])
-            conf.data_conf = strToIntArr(s[5])
-            conf.learn_moment = s[6].toFloat()
-            conf.error_norm = s[7].toFloat()
+            conf.learn_moment = s[5].toFloat()
+            conf.data_in = s[6].toInt()
+            conf.data_all = s[7].toInt()
             return conf
         }
     }
