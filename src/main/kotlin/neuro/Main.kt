@@ -10,16 +10,16 @@ fun main(args: Array<String>) {
     if (args.isNotEmpty()) {
         if (args[0] == "help")
             print(
-                    """Usage: neuro [convert] [help]
+                    """Usage: app [convert] [help]
                 config:
                 activate function {relu, sigm}
                 learning rate: 0 to 1
                 regularization coef
                 ratio train to test data: 0 to 1
                 net config
-                input, output layer config
                 learn moment
-                error
+                input layer size
+                input + output layer size
                 """)
         else if (args[0] == "convert") {
             NetKeeper.convertData()
