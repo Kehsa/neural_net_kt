@@ -120,27 +120,27 @@ class FxAppWindow : Application() {
         sidePane.children.add(buildButton("Stop", { keeper.cancel()
             label.text = "Learning stopped"}))
 
-        var txtf = buildTxtField()
-        txtf.promptText = keeper.conf.learn_rate.toString()
-        sidePane.children.add(txtf)
+        val txtf_lr = buildTxtField()
+        txtf_lr.promptText = keeper.conf.learn_rate.toString()
+        sidePane.children.add(txtf_lr)
         sidePane.children.add(buildButton("Apply learn rate", {
-            keeper.conf.learn_rate = txtf.text.toFloat()
+            keeper.conf.learn_rate = txtf_lr.text.toFloat()
             label.text = "New learn rate is ${keeper.conf.learn_rate}"
         }))
 
-        txtf = buildTxtField()
-        txtf.promptText = keeper.conf.regularization_rate.toString()
-        sidePane.children.add(txtf)
+        val txtf_rr = buildTxtField()
+        txtf_rr.promptText = keeper.conf.regularization_rate.toString()
+        sidePane.children.add(txtf_rr)
         sidePane.children.add(buildButton("Apply regul. rate", {
-            keeper.conf.regularization_rate = txtf.text.toFloat()
+            keeper.conf.regularization_rate = txtf_rr.text.toFloat()
             label.text = "New regularization rate is ${keeper.conf.regularization_rate}"
         }))
 
-        txtf = buildTxtField()
-        txtf.promptText = keeper.stepEpochs.toString()
-        sidePane.children.add(txtf)
+        val txtf_step = buildTxtField()
+        txtf_step.promptText = keeper.stepEpochs.toString()
+        sidePane.children.add(txtf_step)
         sidePane.children.add(buildButton("Apply epoch step", {
-            keeper.stepEpochs = txtf.text.toInt()
+            keeper.stepEpochs = txtf_step.text.toInt()
             label.text = "New step is ${keeper.stepEpochs}"
         }))
 

@@ -1,6 +1,7 @@
 package main.kotlin.neuro
 
 import java.io.Serializable
+import java.lang.Math.abs
 import java.lang.Math.pow
 import java.util.Random
 
@@ -38,7 +39,11 @@ class Neuron(prev_size: Int): Serializable {
     }
 
     fun regularization(coef: Num): Num {
-        return coef * weights.indices.sumByDouble { pow(weights[it].toDouble(), 2.0) }.toFloat()
+        val accum = weights.indices
+                .map { abs(weights[it]) } // L1
+                .sum()
+                    //pow(weights[i].toDouble(), 2.0).toFloat() // L2
+        return coef * accum// * 0.5f) // for l2(squared power)
     }
 
     companion object Rand {
@@ -121,12 +126,18 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
             val lay = layers[il]
             for(npos in lay.neurons.indices) {
                 val neuron = lay.neurons[npos]
-                if (il == lastIndex)
-                    neuron.delta = sigd(neuron.output) * (neuron.err_out(target[npos]) )
-                    //+ neuron.regularization(regulCoef))
-                else
-                    neuron.delta = sigd(neuron.output) * (neuron.err_hidden(lay.nex!!, npos) )
-                    //+ neuron.regularization(regulCoef))
+                if (il == lastIndex) {
+                    if (regulCoef == 0f)
+                        neuron.delta = sigd(neuron.output) * neuron.err_out(target[npos])
+                    else
+                        neuron.delta = sigd(neuron.output) * (neuron.err_out(target[npos]) + neuron.regularization(regulCoef))
+                }
+                else {
+                    if (regulCoef == 0f)
+                        neuron.delta = sigd(neuron.output) * neuron.err_hidden(lay.nex!!, npos)
+                    else
+                        neuron.delta = sigd(neuron.output) * (neuron.err_hidden(lay.nex!!, npos) + neuron.regularization(regulCoef))
+                }
                 val w = neuron.weights
                 for (i in 0..w.size-1)// bias is last
                     w[i] = moment * w[i] + (learning_rate * neuron.delta * lay.prev!!.neurons[i].output)
