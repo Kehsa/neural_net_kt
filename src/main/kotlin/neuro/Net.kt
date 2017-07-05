@@ -2,33 +2,40 @@ package main.kotlin.neuro
 
 import java.io.Serializable
 import java.lang.Math.abs
-import java.lang.Math.pow
 import java.util.Random
 
 typealias Num = Float
 typealias NumArr = FloatArray
 
 class Neuron(prev_size: Int): Serializable {
-    var weights = NumArr(prev_size, { Rand.next })// +1 is bias
+    var weights = NumArr(prev_size, { Rand.next })
     @Transient var output = .0f
     @Transient var delta = .0f
 
+    /**
+     * synapse
+     */
     fun calc(prev_layer: Layer?) {
         if (prev_layer != null) {
             val n = prev_layer.neurons
             val arr = NumArr(weights.size)
-            for (i in 0..weights.size-1) { // last is bias
+            for (i in 0..weights.size-1) {
                 arr[i] = n[i].output * weights[i]
             }
             output = sigm(arr.sum())
-            /*if (!isOutputLayer)
-                output += weights.last()*/
         }
     }
 
+    /**
+     * calculate error in output layer
+     */
     fun err_out(target: Num): Num {
         return (target - output)
     }
+
+    /**
+     * calculate error in hidden layers
+     */
     fun err_hidden(next_lay: Layer, pos: Int = -1): Num {
         val n = next_lay.neurons
         val arr = NumArr(n.size)
@@ -40,10 +47,9 @@ class Neuron(prev_size: Int): Serializable {
 
     fun regularization(coef: Num): Num {
         val accum = weights.indices
-                .map { abs(weights[it]) } // L1
+                .map { abs(weights[it]) }
                 .sum()
-                    //pow(weights[i].toDouble(), 2.0).toFloat() // L2
-        return coef * accum// * 0.5f) // for l2(squared power)
+        return coef * accum
     }
 
     companion object Rand {
@@ -76,6 +82,9 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
         }
     }
 
+    /**
+     * @return output layer (answer of net)
+     */
     fun process(input: NumArr): NumArr {
         calc(input)
         val neurons = layers[layers.lastIndex].neurons
@@ -97,6 +106,9 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
         }
     }
 
+    /**
+     * mean squared error
+     */
     fun mse(inD: List<NumArr>, outD: List<NumArr>): Pair<Num, Num> {
         val output_layer = layers[layers.lastIndex].neurons
         var accum = .0f
@@ -141,7 +153,6 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
                 val w = neuron.weights
                 for (i in 0..w.size-1)// bias is last
                     w[i] = moment * w[i] + (learning_rate * neuron.delta * lay.prev!!.neurons[i].output)
-                //w[w.lastIndex] = moment * w[w.lastIndex] + (learning_rate * neuron.delta)
             }
         }
     }
@@ -149,9 +160,7 @@ class Net(lay_conf: IntArray, val learning_rate: Num,val regulCoef: Num,
 
 fun sigm(x: Num): Num = run {
     1 / (1 + Math.exp((-x).toDouble())).toFloat()
-    //maxOf(.1*x, x)
 }
 fun sigd(x: Num): Num = run {
     (1 - x) * x
-    //if (x > 0) 1.0 else .1
 }

@@ -1,6 +1,6 @@
 package main.kotlin.neuro
 
-val config_path = "neuro.conf"
+val config_path = "config.txt"
 val data_text_path = "data.txt"
 val data_trn_path = "data1.bin"
 val data_tst_path = "data0.bin"
