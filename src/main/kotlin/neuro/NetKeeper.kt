@@ -85,7 +85,7 @@ class NetKeeper(val window: WeakReference<FxAppWindow>): Service<Unit>() {
     }
 
     fun buildNet() {
-        i = 0 //val (f, fd) = ActivationFun.getFunc(conf.activation)
+        i = 0
         net = Net(conf.net_conf, conf.learn_rate, conf.regularization_rate, conf.learn_moment)
         test()
     }
@@ -98,6 +98,9 @@ class NetKeeper(val window: WeakReference<FxAppWindow>): Service<Unit>() {
     }
 
     companion object {
+        /**
+         * from csv to Data class
+         */
         fun convertData() {
             val strings = Files.readAllLines(Paths.get(data_text_path))
             val conf = Config.readConfig()
@@ -107,6 +110,10 @@ class NetKeeper(val window: WeakReference<FxAppWindow>): Service<Unit>() {
             serialize(train, data_trn_path)
             serialize(test, data_tst_path)
         }
+
+        /**
+         * @return Pair(train data, test data)
+         */
         fun dataFromStringList(str: List<String>, trainRate: Float,
                                isize: Int, columnsCount: Int): Pair<Data, Data> {
             println(str.size)
