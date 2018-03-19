@@ -1,4 +1,4 @@
-package main.kotlin.neuro
+package com.kehsa.neuro
 
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream

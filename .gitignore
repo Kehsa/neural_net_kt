@@ -1,5 +1,5 @@
 .idea/
-out/
-NeuralNet.iml
+target/
+neural_net_kt.iml
 /data*
 /neuro*

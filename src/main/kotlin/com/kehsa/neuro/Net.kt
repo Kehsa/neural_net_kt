@@ -1,4 +1,4 @@
-package main.kotlin.neuro
+package com.kehsa.neuro
 
 import java.io.Serializable
 import java.lang.Math.abs

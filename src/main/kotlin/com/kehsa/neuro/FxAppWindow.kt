@@ -1,4 +1,4 @@
-package main.kotlin.neuro
+package com.kehsa.neuro
 
 import javafx.application.Application
 import javafx.event.ActionEvent

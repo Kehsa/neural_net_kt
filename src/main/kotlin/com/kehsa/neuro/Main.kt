@@ -1,4 +1,4 @@
-package main.kotlin.neuro
+package com.kehsa.neuro
 
 val config_path = "config.txt"
 val data_text_path = "data.txt"
